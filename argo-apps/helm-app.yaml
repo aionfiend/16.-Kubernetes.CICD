@@ -11,7 +11,7 @@ spec:
     #  ref: valuesRepo # Это имя-ссылка на корень репозитория
 
     # ИСТОЧНИК №1: Helm-чарт Drupal из репозитория 14.-Kubernetes.-Helm
-    - repoURL: https://github.com/aionfiend/14.-Kubernetes.-Helm
+    - repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD
       targetRevision: master
       path: .
       helm:
