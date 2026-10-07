@@ -6,6 +6,10 @@ metadata:
 spec:
   project: default
   sources:
+    - repoURL: https://github.com/aionfiend/14.-Kubernetes.-Helm.git
+      targetRevision: master
+      ref: valuesRepo # Это имя-ссылка на корень репозитория
+
     # ИСТОЧНИК №1: Helm-чарт Drupal из репозитория 14.-Kubernetes.-Helm
     - repoURL: github.com/aionfiend/14.-Kubernetes.-Helm
       targetRevision: main
