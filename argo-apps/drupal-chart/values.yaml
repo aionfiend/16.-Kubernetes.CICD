@@ -1,31 +1,27 @@
-# Параметры авторизации Drupal
-drupalUsername: admin
-drupalPassword: DrupalAdminPassword555
+# Имя существующего секрета, который будет создан из SealedSecret
 drupalSecretName: drupal-passwords-v2
 drupalSecretPasswordKey: drupal-password
+drupalUsername: admin
 
 # Использование существующего секрета для самого Drupal
 auth:
   existingSecret: drupal-passwords-v2
   passwordKey: drupal-password
 
-# Включаем Istio обратно, но заставляем приложение ждать готовности сети
+# Заставляем поды Drupal ждать готовности прокси-сети Istio
 podAnnotations:
   proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 
-# Глобальные настройки репозиториев
 global:
   imageRegistry: docker.io
   security:
     allowInsecureImages: true
 
-# Конфигурация основного приложения Drupal
 image:
   registry: docker.io
   repository: bitnamilegacy/drupal
   tag: 11.2.3-debian-12-r1
 
-# Отключение постоянных томов (Persistence)
 persistence:
   enabled: false
 
@@ -35,17 +31,15 @@ volumePermissions:
     registry: docker.io
     repository: bitnamilegacy/os-shell
 
-# Сетевые настройки сервиса в K8s
 service:
   type: ClusterIP
   ports:
-    http: 8080 # Явно указываем стандартный порт контейнера Bitnami
+    http: 8080 # Стандартный порт контейнера Bitnami Drupal
 
-# Конфигурация встроенной базы данных MariaDB
+# Конфигурация базы данных MariaDB
 mariadb:
   auth:
     existingSecret: drupal-passwords-v2
-    # Cтандартные ключи внутри секретов
     passwordKey: mariadb-password
     rootPasswordKey: mariadb-root-password
   primary:
