@@ -1,27 +1,41 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argo-drupal
+  name: drupal-helm-app
   namespace: argocd
 spec:
-  destination:
-    namespace: default
-    server: https://kubernetes.default.svc
-  source:
-    path: ''
-    repoURL: https://aionfiend.github.io/14.-Kubernetes.-Helm/
-    targetRevision: 0.1.0
-    chart: first-app
-    helm:
-      parameters:
-        - name: istio.hosts[0]
-          value: app-helm.k8s-1.sa
-        - name: istio.hosts[1]
-          value: app-helm.k8s-2.sa
-  sources: []
   project: default
+  sources:
+    # ИСТОЧНИК №1: Helm-чарт Drupal из репозитория 14.-Kubernetes.-Helm
+    - repoURL: https://aionfiend.github.io/14.-Kubernetes.-Helm.git
+      targetRevision: master
+      path: drupal
+      helm:
+        valueFiles:
+          - ../drupal-values.yaml
+        values: |
+          db:
+            password: ""
+            root_password: ""
+            existingSecret: "drupal-mysql-secret"
+          # Добавляем аннотацию Istio во все создаваемые поды через values чарта
+          podAnnotations:
+            proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+
+    # ИСТОЧНИК №2: Зашифрованный SealedSecret из репозитория 16.-Kubernetes.CICD
+    - repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD.git
+      targetRevision: main
+      path: argo-apps/secrets
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: drupal-prod
+
   syncPolicy:
     automated:
-      prune: false
-      selfHeal: false
-      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      # Опция для корректной работы мутирующих вебхуков Istio:
+      - ServerSideApply=true

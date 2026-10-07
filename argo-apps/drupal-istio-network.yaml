@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: drupal-gateway
+  namespace: drupal-prod
+spec:
+  selector:
+    istio: ingressgateway # Использование стандартного шлюза Istio
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "drupal.local" # Сюда пишется ваш домен (или локальный хост)
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: drupal-virtualservice
+  namespace: drupal-prod
+spec:
+  hosts:
+    - "drupal.local"
+  gateways:
+    - drupal-gateway
+  http:
+    - route:
+        - destination:
+            # Имя сервиса Drupal из вашего Helm-чарта 14.-Kubernetes.-Helm
+            host: drupal-service
+            port:
+              number: 80
