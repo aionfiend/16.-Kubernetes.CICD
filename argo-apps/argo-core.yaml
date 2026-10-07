@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: argo
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io # Удалит дочерние элементы при удалении корня
 spec:
   destination:
     namespace: argocd
@@ -11,7 +13,7 @@ spec:
   source:
     path: ./argo-core/
     repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD.git
-    targetRevision: master
+    targetRevision: main
   syncPolicy:
     automated:
       enabled: true
