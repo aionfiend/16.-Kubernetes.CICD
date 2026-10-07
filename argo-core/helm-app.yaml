@@ -13,10 +13,10 @@ spec:
     # ИСТОЧНИК №1: Helm-чарт Drupal из репозитория 14.-Kubernetes.-Helm
     - repoURL: https://github.com/aionfiend/14.-Kubernetes.-Helm
       targetRevision: master
-      path: drupal
+      path: .
       helm:
         valueFiles:
-          - ../drupal-values.yaml
+          - drupal-values.yaml
         values: |
           db:
             password: ""
