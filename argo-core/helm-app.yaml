@@ -7,7 +7,7 @@ spec:
   project: default
   sources:
     # ИСТОЧНИК №1: Helm-чарт Drupal из репозитория 14.-Kubernetes.-Helm
-    - repoURL: https://aionfiend.github.io/14.-Kubernetes.-Helm.git
+    - repoURL: https://github.com/aionfiend/14.-Kubernetes.-Helm/blob/master/drupal-values.yaml
       targetRevision: main
       path: drupal
       helm:
