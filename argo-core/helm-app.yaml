@@ -12,7 +12,7 @@ spec:
 
     # ИСТОЧНИК №1: Helm-чарт Drupal из репозитория 14.-Kubernetes.-Helm
     - repoURL: https://github.com/aionfiend/14.-Kubernetes.-Helm
-      targetRevision: main
+      targetRevision: master
       path: drupal
       helm:
         valueFiles:
@@ -28,7 +28,7 @@ spec:
 
     # ИСТОЧНИК №2: Зашифрованный SealedSecret из репозитория 16.-Kubernetes.CICD
     - repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD.git
-      targetRevision: main
+      targetRevision: master
       path: argo-apps/secrets
 
   destination:
