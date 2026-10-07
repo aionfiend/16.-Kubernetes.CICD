@@ -28,7 +28,7 @@ spec:
 
     # ИСТОЧНИК №2: Зашифрованный SealedSecret из репозитория 16.-Kubernetes.CICD
     - repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD.git
-      targetRevision: master
+      targetRevision: main
       path: argo-apps/secrets
 
   destination:
