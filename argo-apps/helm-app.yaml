@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocicd
+  name: argo-drupal
 spec:
   destination:
     namespace: default
     server: https://kubernetes.default.svc
   source:
     path: ''
-    repoURL: https://aionfiend.github.io/helm-36-26/
+    repoURL: https://aionfiend.github.io/14.-Kubernetes.-Helm/
     targetRevision: 0.1.0
     chart: first-app
     helm:

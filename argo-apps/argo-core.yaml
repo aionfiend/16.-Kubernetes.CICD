@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     path: ./argo-core/
-    repoURL: https://github.com/aionfiend/argo-36-26.git
+    repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD.git
     targetRevision: master
   syncPolicy:
     automated:
