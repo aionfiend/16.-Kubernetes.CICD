@@ -3,21 +3,19 @@ kind: Application
 metadata:
   name: argo
   namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io # Удалит дочерние элементы при удалении корня
 spec:
   destination:
     namespace: argocd
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: ./argo-core/
+    path: argo-apps/ # Указываем строго на папку с управляющими манифестами
     repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD.git
-    targetRevision: main
+    targetRevision: main # Использована ветка main
   syncPolicy:
     automated:
       enabled: true
-      prune: false
-      selfHeal: false
+      prune: true
+      selfHeal: true
     syncOptions:
       - ServerSideApply=true
