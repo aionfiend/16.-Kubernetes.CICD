@@ -16,7 +16,7 @@ spec:
       path: .
       helm:
         valueFiles:
-          - drupal-values.yaml
+          - values.yaml
         values: |
           db:
             password: ""
@@ -25,12 +25,7 @@ spec:
           # Добавляем аннотацию Istio во все создаваемые поды через values чарта
           podAnnotations:
             proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
-
-    # ИСТОЧНИК №2: Зашифрованный SealedSecret из репозитория 16.-Kubernetes.CICD
-    - repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD.git
-      targetRevision: main
-      path: argo-apps/secrets
-
+          
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: drupal-prod
