@@ -45,8 +45,8 @@ mariadb:
     rootPasswordKey: mariadb-root-password
   primary:
     replicaCount: 1
-    #podAnnotations:
-      #proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+  #podAnnotations:
+    #proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
     persistence:
       enabled: false
   image:
