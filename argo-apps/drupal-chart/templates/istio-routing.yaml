@@ -27,7 +27,7 @@ spec:
   http:
     - route:
         - destination:
-            # Имя сервиса, которое Helm сгенерирует автоматически на основе имени релиза
-            host: drupal-homework-chart
+            # Исправленное имя сервиса (имя_релиза-имя_субчарта)
+            host: drupal-helm-app-drupal
             port:
-              number: 8080 # Порт из нашего values.yaml
+              number: 8080 # Должен соответствовать spec.ports[].port у сервиса
