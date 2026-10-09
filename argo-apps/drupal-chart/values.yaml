@@ -10,8 +10,8 @@ auth:
   passwordKey: drupal-password
 
 # Заставляем поды Drupal ждать готовности прокси-сети Istio
-podAnnotations:
-  proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+#podAnnotations:
+  #proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 
 global:
   imageRegistry: docker.io
@@ -45,8 +45,8 @@ mariadb:
     rootPasswordKey: mariadb-root-password
   primary:
     replicaCount: 1
-    podAnnotations:
-      proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+    #podAnnotations:
+      #proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
     persistence:
       enabled: false
   image:
