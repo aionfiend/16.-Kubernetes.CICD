@@ -4,14 +4,15 @@ drupalSecretName: drupal-passwords-v2
 drupalSecretPasswordKey: drupal-password
 drupalUsername: admin
 
-# Использование существующего секрета для самого Drupal
-auth:
-  existingSecret: drupal-passwords-v2
-  passwordKey: drupal-password
-
-# Заставляем поды Drupal ждать готовности прокси-сети Istio
-#podAnnotations:
-  #proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
+# Обертка для параметров родительского/дочернего чарта Drupal от Bitnami
+drupal:
+  auth:
+    existingSecret: drupal-passwords-v2
+    passwordKey: drupal-password
+  persistence:
+    enabled: false          # <-- ТЕПЕРЬ ДИСКИ ОТКЛЮЧЕНЫ ДЛЯ DRUPAL
+  volumePermissions:
+    enabled: false
 
 global:
   imageRegistry: docker.io
@@ -23,21 +24,12 @@ image:
   repository: bitnamilegacy/drupal
   tag: 11.2.3-debian-12-r1
 
-persistence:
-  enabled: false
-
-volumePermissions:
-  enabled: false
-  image:
-    registry: docker.io
-    repository: bitnamilegacy/os-shell
-
 service:
   type: ClusterIP
   ports:
-    http: 8080 # Стандартный порт контейнера Bitnami Drupal
+    http: 8080
 
-# Конфигурация базы данных MariaDB
+# Конфигурация базы данных MariaDB (Она идет независимо внутри Bitnami-чарта)
 mariadb:
   auth:
     existingSecret: drupal-passwords-v2
@@ -45,10 +37,8 @@ mariadb:
     rootPasswordKey: mariadb-root-password
   primary:
     replicaCount: 1
-  #podAnnotations:
-    #proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
     persistence:
-      enabled: false
+      enabled: false        # <-- ТЕПЕРЬ ДИСКИ ОТКЛЮЧЕНЫ ДЛЯ БАЗЫ ДАННЫХ
   image:
     registry: docker.io
     repository: bitnamilegacy/mariadb
