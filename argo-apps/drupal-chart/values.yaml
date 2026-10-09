@@ -1,4 +1,5 @@
 # Имя существующего секрета, который будет создан из SealedSecret
+replicaCount: 1
 drupalSecretName: drupal-passwords-v2
 drupalSecretPasswordKey: drupal-password
 drupalUsername: admin
@@ -43,6 +44,7 @@ mariadb:
     passwordKey: mariadb-password
     rootPasswordKey: mariadb-root-password
   primary:
+    replicaCount: 1
     podAnnotations:
       proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
     persistence:
