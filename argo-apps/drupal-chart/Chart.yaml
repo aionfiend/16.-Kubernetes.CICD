@@ -8,4 +8,4 @@ appVersion: "11.2.3"
 dependencies:
   - name: drupal
     version: "16.1.1" # Стабильная версия чарта Drupal от Bitnami
-    repository: "https://bitnami.com"
+    repository: "oci://registry-1.docker.io/bitnamicharts"
