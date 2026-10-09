@@ -3,7 +3,6 @@ drupalSecretName: drupal-passwords-v2
 drupalSecretPasswordKey: drupal-password
 drupalUsername: admin
 
-# ВСЕ настройки для дочернего чарта Bitnami Drupal должны быть ЗДЕСЬ:
 drupal:
   global:
     imageRegistry: docker.io
@@ -11,8 +10,24 @@ drupal:
       allowInsecureImages: true
   image:
     registry: docker.io
-    repository: bitnamilegacy/drupal  # Используем архивный рабочий репозиторий Bitnami
-    tag: 11.2.3-debian-12-r1         # Актуальный и существующий тег
+    repository: bitnamilegacy/drupal
+    tag: 11.2.3-debian-12-r1
+
+  # СКРИПТ ОЖИДАНИЯ ГОТОВНОСТИ БАЗЫ ДАННЫХ
+  initContainers:
+    - name: wait-for-db
+      image: docker.io/bitnamilegacy/os-shell:latest
+      command:
+        - /bin/bash
+        - -ec
+        - |
+          echo "Waiting for MariaDB to be ready..."
+          until nc -zvw3 drupal-helm-app-mariadb 3306; do
+            echo "Database is not reachable yet. Sleeping 5 seconds..."
+            sleep 5
+          done
+          echo "MariaDB is UP and running!"
+
   auth:
     existingSecret: drupal-passwords-v2
     passwordKey: drupal-password
@@ -25,7 +40,7 @@ drupal:
     ports:
       http: 8080
 
-# Конфигурация базы данных MariaDB (Остается без изменений)
+# Конфигурация базы данных MariaDB
 mariadb:
   auth:
     existingSecret: drupal-passwords-v2
