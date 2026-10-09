@@ -1,35 +1,31 @@
-# Имя существующего секрета, который будет создан из SealedSecret
 replicaCount: 1
 drupalSecretName: drupal-passwords-v2
 drupalSecretPasswordKey: drupal-password
 drupalUsername: admin
 
-# Обертка для параметров родительского/дочернего чарта Drupal от Bitnami
+# ВСЕ настройки для дочернего чарта Bitnami Drupal должны быть ЗДЕСЬ:
 drupal:
+  global:
+    imageRegistry: docker.io
+    security:
+      allowInsecureImages: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/drupal  # Используем архивный рабочий репозиторий Bitnami
+    tag: 11.2.3-debian-12-r1         # Актуальный и существующий тег
   auth:
     existingSecret: drupal-passwords-v2
     passwordKey: drupal-password
   persistence:
-    enabled: false          # <-- ТЕПЕРЬ ДИСКИ ОТКЛЮЧЕНЫ ДЛЯ DRUPAL
+    enabled: false
   volumePermissions:
     enabled: false
+  service:
+    type: ClusterIP
+    ports:
+      http: 8080
 
-global:
-  imageRegistry: docker.io
-  security:
-    allowInsecureImages: true
-
-image:
-  registry: docker.io
-  repository: bitnamilegacy/drupal
-  tag: 11.2.3-debian-12-r1
-
-service:
-  type: ClusterIP
-  ports:
-    http: 8080
-
-# Конфигурация базы данных MariaDB (Она идет независимо внутри Bitnami-чарта)
+# Конфигурация базы данных MariaDB (Остается без изменений)
 mariadb:
   auth:
     existingSecret: drupal-passwords-v2
@@ -38,7 +34,7 @@ mariadb:
   primary:
     replicaCount: 1
     persistence:
-      enabled: false        # <-- ТЕПЕРЬ ДИСКИ ОТКЛЮЧЕНЫ ДЛЯ БАЗЫ ДАННЫХ
+      enabled: false
   image:
     registry: docker.io
     repository: bitnamilegacy/mariadb
