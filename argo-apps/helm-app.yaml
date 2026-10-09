@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD
     targetRevision: main
-    path: drupal-chart/
+    path: drupal-chart
     helm:
       valueFiles:
         - values.yaml
