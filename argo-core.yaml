@@ -14,7 +14,6 @@ spec:
     targetRevision: main # Использована ветка main
   syncPolicy:
     automated:
-      enabled: true
       prune: true
       selfHeal: true
     syncOptions:
