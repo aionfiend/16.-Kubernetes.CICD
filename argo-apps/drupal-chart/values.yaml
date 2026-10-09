@@ -46,10 +46,19 @@ mariadb:
     existingSecret: drupal-passwords-v2
     passwordKey: mariadb-password
     rootPasswordKey: mariadb-root-password
+
+  # 1. Отключаем диски для корневого чарта MariaDB (ОБЯЗАТЕЛЬНО):
+  persistence:
+    enabled: false
+  volumePermissions:
+    enabled: false
+
+  # 2. Отключаем диски для основного пода (primary):
   primary:
     replicaCount: 1
     persistence:
       enabled: false
+
   image:
     registry: docker.io
     repository: bitnamilegacy/mariadb
@@ -58,5 +67,3 @@ mariadb:
     image:
       registry: docker.io
       repository: bitnamilegacy/os-shell
-  volumePermissions:
-    enabled: false
