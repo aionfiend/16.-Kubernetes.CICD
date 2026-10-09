@@ -13,13 +13,6 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-      values: |
-        db:
-          password: ""
-          root_password: ""
-          existingSecret: "drupal-passwords-v2"
-        podAnnotations:
-          proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
 
   destination:
     server: 'https://kubernetes.default.svc'
