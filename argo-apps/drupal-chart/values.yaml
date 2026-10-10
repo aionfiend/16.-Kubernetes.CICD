@@ -3,19 +3,11 @@ drupalSecretName: drupal-passwords-v2
 drupalSecretPasswordKey: drupal-password
 drupalUsername: admin
 
+# Корневые блоки авторизации
 auth:
   existingSecret: drupal-passwords-v2
   passwordKey: drupal-password
   databasePasswordKey: mariadb-password
-
-# Указываем самому Друпалу, из какого существующего секрета брать пароль к БД
-externalDatabase:
-  host: drupal-helm-app-mariadb.drupal-prod.svc.cluster.local
-  port: 3306
-  user: bn_drupal
-  database: bitnami_drupal
-  existingSecret: drupal-passwords-v2
-  existingSecretPasswordKey: mariadb-password
 
 drupal:
   global:
@@ -27,7 +19,7 @@ drupal:
     repository: bitnamilegacy/drupal
     tag: 11.2.3-debian-12-r1
 
-  # СКРИПТ ОЖИДАНИЯ ГОТОВНОСТИ БАЗЫ ДАННЫХ
+  # СКРИПТ ОЖИДАНИЯ ГОТОВНОСТИ БАЗЫ ДАННЫХ (Проверяет FQDN адрес)
   initContainers:
     - name: wait-for-db
       image: docker.io/bitnamilegacy/os-shell:latest
@@ -35,20 +27,18 @@ drupal:
         - /bin/bash
         - -ec
         - |
-          echo "Waiting for MariaDB to be ready at drupal-helm-app-mariadb:3306..."
-          until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/drupal-helm-app-mariadb/3306' 2>/dev/null; do
+          echo "Waiting for MariaDB to be ready at drupal-helm-app-mariadb.drupal-prod.svc.cluster.local:3306..."
+          until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/drupal-helm-app-mariadb.drupal-prod.svc.cluster.local/3306' 2>/dev/null; do
             echo "Database is not reachable yet. Sleeping 5 seconds..."
             sleep 5
           done
           echo "MariaDB is UP and running!"
 
+  # Связываем внутренний PHP-код Друпала с нашим SealedSecret
   auth:
     existingSecret: drupal-passwords-v2
     passwordKey: drupal-password
-    databasePasswordKey: mariadb-password
-  externalDatabase:
-    existingSecret: drupal-passwords-v2
-    existingSecretPasswordKey: mariadb-password
+    databasePasswordKey: mariadb-root-password # Переключаем Drupal на root-пароль
 
   persistence:
     enabled: false
@@ -61,12 +51,11 @@ drupal:
 
   # Конфигурация субчарта базы данных MariaDB
   mariadb:
-    # ОБЯЗАТЕЛЬНЫЙ ФЛАГ, чтобы активировать применение auth-переменных во всем чарте:
     enabled: true
     auth:
       existingSecret: drupal-passwords-v2
-      passwordKey: mariadb-password
       rootPasswordKey: mariadb-root-password
+      passwordKey: mariadb-password
     persistence:
       enabled: false
     volumePermissions:
@@ -75,8 +64,8 @@ drupal:
       replicaCount: 1
       auth:
         existingSecret: drupal-passwords-v2
-        passwordKey: mariadb-password
         rootPasswordKey: mariadb-root-password
+        passwordKey: mariadb-password
       persistence:
         enabled: false
     image:
