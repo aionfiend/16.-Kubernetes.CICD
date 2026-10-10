@@ -8,7 +8,12 @@ auth:
   passwordKey: drupal-password
   databasePasswordKey: mariadb-password
 
+# Указываем самому Друпалу, из какого существующего секрета брать пароль к БД
 externalDatabase:
+  host: drupal-helm-app-mariadb
+  port: 3306
+  user: bn_drupal
+  database: bitnami_drupal
   existingSecret: drupal-passwords-v2
   existingSecretPasswordKey: mariadb-password
 
