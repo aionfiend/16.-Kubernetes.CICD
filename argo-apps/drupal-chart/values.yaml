@@ -22,12 +22,11 @@ drupal:
         - -ec
         - |
           echo "Waiting for MariaDB to be ready at drupal-helm-app-mariadb:3306..."
-          until nc -z drupal-helm-app-mariadb 3306; do
+          until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/drupal-helm-app-mariadb/3306' 2>/dev/null; do
             echo "Database is not reachable yet. Sleeping 5 seconds..."
             sleep 5
           done
           echo "MariaDB is UP and running!"
-  
 
   auth:
     existingSecret: drupal-passwords-v2
