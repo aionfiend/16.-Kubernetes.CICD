@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com
+    repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD
     targetRevision: main
     path: argo-apps/drupal-chart
     helm:
