@@ -52,6 +52,9 @@ drupal:
       enabled: false
     primary:
       replicaCount: 1
+      #Для надежности дублируем существующий секрет в параметры primary-пода
+      auth:
+        existingSecret: drupal-passwords-v2
       persistence:
         enabled: false
     image:
