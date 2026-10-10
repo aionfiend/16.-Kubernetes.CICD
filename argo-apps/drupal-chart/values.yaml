@@ -98,4 +98,3 @@ drupal:
       image:
         registry: docker.io
         repository: bitnamilegacy/os-shell
-  
