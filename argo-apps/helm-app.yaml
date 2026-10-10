@@ -10,34 +10,8 @@ spec:
     targetRevision: main
     path: argo-apps/drupal-chart
     helm:
-      valueFiles:
-        - values.yaml
-      # ПРИНУДИТЕЛЬНОЕ ПЕРЕОПРЕДЕЛЕНИЕ СЕКРЕТОВ (ДОБАВИТЬ ЭТОТ БЛОК):
-      values: |
-        auth:
-          existingSecret: drupal-passwords-v2
-          passwordKey: drupal-password
-          databasePasswordKey: mariadb-password
-        externalDatabase:
-          existingSecret: drupal-passwords-v2
-          existingSecretPasswordKey: mariadb-password
-        drupal:
-          auth:
-            existingSecret: drupal-passwords-v2
-            passwordKey: drupal-password
-            databasePasswordKey: mariadb-password
-          externalDatabase:
-            existingSecret: drupal-passwords-v2
-            existingSecretPasswordKey: mariadb-password
-          mariadb:
-            auth:
-              existingSecret: drupal-passwords-v2
-              passwordKey: mariadb-password
-              rootPasswordKey: mariadb-root-password
-            primary:
-              auth:
-                existingSecret: drupal-passwords-v2
-                passwordKey: mariadb-password
+        valueFiles:
+          - values.yaml
 
   destination:
     server: 'https://kubernetes.default.svc'
