@@ -7,7 +7,7 @@ drupalUsername: admin
 auth:
   existingSecret: drupal-passwords-v2
   passwordKey: drupal-password
-  databasePasswordKey: mariadb-password
+  databasePassword: SecretPassword123!   # Заменяем ключ на прямой текстовый пароль
 
 drupal:
   global:
@@ -34,24 +34,24 @@ drupal:
           done
           echo "MariaDB is UP and running!"
 
-  # ДОБАВЛЕНО: Увеличиваем таймауты старта приложения, чтобы Kubernetes дал Drupal время развернуть таблицы
+  # Таймауты старта приложения
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 180  # Ждать 3 минуты перед первой проверкой
+    initialDelaySeconds: 180
     periodSeconds: 10
     failureThreshold: 15
   livenessProbe:
     enabled: true
-    initialDelaySeconds: 240  # Дать 4 минуты на полную инсталляцию
+    initialDelaySeconds: 240
     periodSeconds: 15
     failureThreshold: 8
 
-  # Связываем внутренний PHP-код Друпала с нашим SealedSecret (Подключение под root)
+  # Авторизация приложения Drupal (переключаем обратно на bn_drupal с текстом)
   auth:
     existingSecret: drupal-passwords-v2
     passwordKey: drupal-password
-    databasePasswordKey: mariadb-root-password
-    username: root
+    databasePassword: SecretPassword123!
+    username: bn_drupal
     database: bitnami_drupal
 
   persistence:
@@ -63,14 +63,13 @@ drupal:
     ports:
       http: 8080
 
-  # Конфигурация субчарта базы данных MariaDB
+  # Конфигурация субчарта базы данных MariaDB (Убираем existingSecret)
   mariadb:
     enabled: true
     auth:
-      allowEmptyPassword: true
-      existingSecret: drupal-passwords-v2
-      rootPasswordKey: mariadb-root-password
-      passwordKey: mariadb-password
+      allowEmptyPassword: false
+      rootPassword: RootPassword123!
+      password: SecretPassword123!       # Этот пароль гарантированно совпадет с Drupal
       username: bn_drupal
       database: bitnami_drupal
     persistence:
@@ -80,10 +79,9 @@ drupal:
     primary:
       replicaCount: 1
       auth:
-        allowEmptyPassword: true
-        existingSecret: drupal-passwords-v2
-        rootPasswordKey: mariadb-root-password
-        passwordKey: mariadb-password
+        allowEmptyPassword: false
+        rootPassword: RootPassword123!
+        password: SecretPassword123!
         username: bn_drupal
         database: bitnami_drupal
       persistence:
