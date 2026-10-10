@@ -38,8 +38,8 @@ drupal:
   auth:
     existingSecret: drupal-passwords-v2
     passwordKey: drupal-password
-    databasePasswordKey: mariadb-password
-    username: bn_drupal
+    databasePasswordKey: mariadb-root-password
+    username: root
     database: bitnami_drupal
 
   persistence:
