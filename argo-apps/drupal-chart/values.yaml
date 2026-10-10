@@ -33,7 +33,7 @@ drupal:
             sleep 5
           done
           echo "MariaDB is UP and running!"
-          
+
   # УВЕЛИЧИВАЕМ ТАЙМАУТЫ СТАРТА ПРИЛОЖЕНИЯ
   readinessProbe:
     enabled: true
@@ -58,7 +58,7 @@ drupal:
   persistence:
     enabled: false
   volumePermissions:
-    enabled: false
+    enabled: true
   service:
     type: ClusterIP
     ports:
@@ -76,7 +76,7 @@ drupal:
     persistence:
       enabled: false
     volumePermissions:
-      enabled: false
+      enabled: true
     primary:
       replicaCount: 1
       auth:
