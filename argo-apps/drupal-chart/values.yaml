@@ -33,6 +33,19 @@ drupal:
             sleep 5
           done
           echo "MariaDB is UP and running!"
+          
+  # УВЕЛИЧИВАЕМ ТАЙМАУТЫ СТАРТА ПРИЛОЖЕНИЯ
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 180  # Ждать ровно 3 минуты перед первой проверкой порта
+    periodSeconds: 10         # Опрашивать каждые 10 секунд
+    failureThreshold: 15      # Позволить упасть 15 раз подряд, прежде чем убить контейнер
+
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 240  # Дать 4 минуты на запуск, прежде чем перезапускать под
+    periodSeconds: 15
+    failureThreshold: 8
 
   # 2. Блок авторизации самого приложения Drupal
   auth:
