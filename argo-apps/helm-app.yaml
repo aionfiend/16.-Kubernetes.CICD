@@ -5,17 +5,42 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  # ИСПОЛЬЗУЕМ ОДИН СТАБИЛЬНЫЙ ИСТОЧНИК ВМЕСТО BLOKA SOURCES
   source:
-    repoURL: https://github.com/aionfiend/16.-Kubernetes.CICD
+    repoURL: https://github.com
     targetRevision: main
     path: argo-apps/drupal-chart
     helm:
       valueFiles:
         - values.yaml
+      # ПРИНУДИТЕЛЬНОЕ ПЕРЕОПРЕДЕЛЕНИЕ СЕКРЕТОВ (ДОБАВИТЬ ЭТОТ БЛОК):
+      values: |
+        auth:
+          existingSecret: drupal-passwords-v2
+          passwordKey: drupal-password
+          databasePasswordKey: mariadb-password
+        externalDatabase:
+          existingSecret: drupal-passwords-v2
+          existingSecretPasswordKey: mariadb-password
+        drupal:
+          auth:
+            existingSecret: drupal-passwords-v2
+            passwordKey: drupal-password
+            databasePasswordKey: mariadb-password
+          externalDatabase:
+            existingSecret: drupal-passwords-v2
+            existingSecretPasswordKey: mariadb-password
+          mariadb:
+            auth:
+              existingSecret: drupal-passwords-v2
+              passwordKey: mariadb-password
+              rootPasswordKey: mariadb-root-password
+            primary:
+              auth:
+                existingSecret: drupal-passwords-v2
+                passwordKey: mariadb-password
 
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: 'https://default.svc'
     namespace: drupal-prod
 
   syncPolicy:
