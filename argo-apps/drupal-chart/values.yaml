@@ -3,11 +3,11 @@ drupalSecretName: drupal-passwords-v2
 drupalSecretPasswordKey: drupal-password
 drupalUsername: admin
 
-# Корневые блоки авторизации
+# 1. Корневой блок (для совместимости)
 auth:
   existingSecret: drupal-passwords-v2
   passwordKey: drupal-password
-  databasePasswordKey: mariadb-root-password
+  databasePasswordKey: mariadb-password
 
 drupal:
   global:
@@ -34,12 +34,13 @@ drupal:
           done
           echo "MariaDB is UP and running!"
 
-  # Настройки связи Drupal с базой данных (работаем через root)
+  # 2. Блок авторизации самого приложения Drupal
   auth:
     existingSecret: drupal-passwords-v2
     passwordKey: drupal-password
-    databasePasswordKey: mariadb-root-password
-    username: root
+    databasePasswordKey: mariadb-password # Используем mariadb-password
+    username: bn_drupal                    # Подключаемся как bn_drupal
+    database: bitnami_drupal
 
   persistence:
     enabled: false
@@ -50,13 +51,15 @@ drupal:
     ports:
       http: 8080
 
-  # Конфигурация субчарта базы данных MariaDB
+  # 3. Конфигурация субчарта базы данных MariaDB
   mariadb:
     enabled: true
     auth:
       existingSecret: drupal-passwords-v2
       rootPasswordKey: mariadb-root-password
       passwordKey: mariadb-password
+      username: bn_drupal                  # Системный пользователь базы
+      database: bitnami_drupal              # Имя создаваемой базы данных
     persistence:
       enabled: false
     volumePermissions:
@@ -67,6 +70,8 @@ drupal:
         existingSecret: drupal-passwords-v2
         rootPasswordKey: mariadb-root-password
         passwordKey: mariadb-password
+        username: bn_drupal
+        database: bitnami_drupal
       persistence:
         enabled: false
     image:
