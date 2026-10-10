@@ -40,30 +40,25 @@ drupal:
     ports:
       http: 8080
 
-# Конфигурация базы данных MariaDB
-mariadb:
-  auth:
-    existingSecret: drupal-passwords-v2
-    passwordKey: mariadb-password
-    rootPasswordKey: mariadb-root-password
-
-  # 1. Отключаем диски для корневого чарта MariaDB (ОБЯЗАТЕЛЬНО):
-  persistence:
-    enabled: false
-  volumePermissions:
-    enabled: false
-
-  # 2. Отключаем диски для основного пода (primary):
-  primary:
-    replicaCount: 1
+  # ПЕРЕНЕСЕНО СЮДА: Теперь субчарт MariaDB увидит эти настройки
+  mariadb:
+    auth:
+      existingSecret: drupal-passwords-v2
+      passwordKey: mariadb-password
+      rootPasswordKey: mariadb-root-password
     persistence:
       enabled: false
-
-  image:
-    registry: docker.io
-    repository: bitnamilegacy/mariadb
-    tag: 12.0.2-debian-12-r0
-  osShell:
+    volumePermissions:
+      enabled: false
+    primary:
+      replicaCount: 1
+      persistence:
+        enabled: false
     image:
       registry: docker.io
-      repository: bitnamilegacy/os-shell
+      repository: bitnamilegacy/mariadb
+      tag: 12.0.2-debian-12-r0
+    osShell:
+      image:
+        registry: docker.io
+        repository: bitnamilegacy/os-shell
