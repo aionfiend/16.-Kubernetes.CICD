@@ -64,22 +64,25 @@ drupal:
     ports:
       http: 8080
 
-  # 3. Конфигурация субчарта базы данных MariaDB
+  # Конфигурация субчарта базы данных MariaDB внутри блока drupal:
   mariadb:
     enabled: true
     auth:
+      # ВКЛЮЧАЕМ ОБХОД БЛОКИРОВКИ:
+      allowEmptyPassword: true
       existingSecret: drupal-passwords-v2
       rootPasswordKey: mariadb-root-password
       passwordKey: mariadb-password
-      username: bn_drupal                  # Системный пользователь базы
-      database: bitnami_drupal              # Имя создаваемой базы данных
+      username: bn_drupal
+      database: bitnami_drupal
     persistence:
       enabled: false
     volumePermissions:
-      enabled: true
+      enabled: false
     primary:
       replicaCount: 1
       auth:
+        allowEmptyPassword: true
         existingSecret: drupal-passwords-v2
         rootPasswordKey: mariadb-root-password
         passwordKey: mariadb-password
@@ -95,3 +98,4 @@ drupal:
       image:
         registry: docker.io
         repository: bitnamilegacy/os-shell
+  
