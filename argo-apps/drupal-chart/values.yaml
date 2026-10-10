@@ -3,7 +3,7 @@ drupalSecretName: drupal-passwords-v2
 drupalSecretPasswordKey: drupal-password
 drupalUsername: admin
 
-# 1. Корневой блок (для совместимости)
+# Корневой блок авторизации
 auth:
   existingSecret: drupal-passwords-v2
   passwordKey: drupal-password
@@ -19,7 +19,7 @@ drupal:
     repository: bitnamilegacy/drupal
     tag: 11.2.3-debian-12-r1
 
-  # СКРИПТ ОЖИДАНИЯ ГОТОВНОСТИ БАЗЫ ДАННЫХ
+  # СКРИПТ ОЖИДАНИЯ ГОТОВНОСТИ БАЗЫ ДАННЫХ (Проверяем стандартное внутреннее имя сервиса)
   initContainers:
     - name: wait-for-db
       image: docker.io/bitnamilegacy/os-shell:latest
@@ -27,48 +27,34 @@ drupal:
         - /bin/bash
         - -ec
         - |
-          echo "Waiting for MariaDB to be ready at drupal-helm-app-mariadb.drupal-prod.svc.cluster.local:3306..."
-          until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/drupal-helm-app-mariadb.drupal-prod.svc.cluster.local/3306' 2>/dev/null; do
+          echo "Waiting for MariaDB to be ready at drupal-helm-app-mariadb:3306..."
+          until timeout 1 bash -c 'cat < /dev/null > /dev/tcp/drupal-helm-app-mariadb/3306' 2>/dev/null; do
             echo "Database is not reachable yet. Sleeping 5 seconds..."
             sleep 5
           done
           echo "MariaDB is UP and running!"
 
-  # УВЕЛИЧИВАЕМ ТАЙМАУТЫ СТАРТА ПРИЛОЖЕНИЯ
-  readinessProbe:
-    enabled: true
-    initialDelaySeconds: 180  # Ждать ровно 3 минуты перед первой проверкой порта
-    periodSeconds: 10         # Опрашивать каждые 10 секунд
-    failureThreshold: 15      # Позволить упасть 15 раз подряд, прежде чем убить контейнер
-
-  livenessProbe:
-    enabled: true
-    initialDelaySeconds: 240  # Дать 4 минуты на запуск, прежде чем перезапускать под
-    periodSeconds: 15
-    failureThreshold: 8
-
-  # 2. Блок авторизации самого приложения Drupal
+  # Связываем внутренний PHP-код Друпала с нашим SealedSecret
   auth:
     existingSecret: drupal-passwords-v2
     passwordKey: drupal-password
-    databasePasswordKey: mariadb-password # Используем mariadb-password
-    username: bn_drupal                    # Подключаемся как bn_drupal
+    databasePasswordKey: mariadb-password
+    username: bn_drupal
     database: bitnami_drupal
 
   persistence:
     enabled: false
   volumePermissions:
-    enabled: true
+    enabled: false
   service:
     type: ClusterIP
     ports:
       http: 8080
 
-  # Конфигурация субчарта базы данных MariaDB внутри блока drupal:
+  # Конфигурация субчарта базы данных MariaDB (Идеально синхронизирована)
   mariadb:
     enabled: true
     auth:
-      # ВКЛЮЧАЕМ ОБХОД БЛОКИРОВКИ:
       allowEmptyPassword: true
       existingSecret: drupal-passwords-v2
       rootPasswordKey: mariadb-root-password
