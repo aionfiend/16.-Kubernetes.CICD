@@ -19,7 +19,7 @@ drupal:
     repository: bitnamilegacy/drupal
     tag: 11.2.3-debian-12-r1
 
-  # СКРИПТ ОЖИДАНИЯ ГОТОВНОСТИ БАЗЫ ДАННЫХ (Проверяем стандартное внутреннее имя сервиса)
+  # СКРИПТ ОЖИДАНИЯ ГОТОВНОСТИ БАЗЫ ДАННЫХ
   initContainers:
     - name: wait-for-db
       image: docker.io/bitnamilegacy/os-shell:latest
@@ -34,7 +34,19 @@ drupal:
           done
           echo "MariaDB is UP and running!"
 
-  # Связываем внутренний PHP-код Друпала с нашим SealedSecret
+  # ДОБАВЛЕНО: Увеличиваем таймауты старта приложения, чтобы Kubernetes дал Drupal время развернуть таблицы
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 180  # Ждать 3 минуты перед первой проверкой
+    periodSeconds: 10
+    failureThreshold: 15
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 240  # Дать 4 минуты на полную инсталляцию
+    periodSeconds: 15
+    failureThreshold: 8
+
+  # Связываем внутренний PHP-код Друпала с нашим SealedSecret (Подключение под root)
   auth:
     existingSecret: drupal-passwords-v2
     passwordKey: drupal-password
@@ -51,7 +63,7 @@ drupal:
     ports:
       http: 8080
 
-  # Конфигурация субчарта базы данных MariaDB (Идеально синхронизирована)
+  # Конфигурация субчарта базы данных MariaDB
   mariadb:
     enabled: true
     auth:
